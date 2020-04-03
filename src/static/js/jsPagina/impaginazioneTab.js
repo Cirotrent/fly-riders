@@ -7,8 +7,8 @@ function impaginazione(tabella){
         console.log(parseInt(dim/rows,10));
         
         $('.pagination').empty();
-        $('.pagination').append('<li class="page-item"><button class="page-link" type="button" >'+"Previous"+'</button></li>');
-        
+       
+        $('.pagination').append('<li data-page="'+"previous"+'" class="page-item"><button class="page-link" type="button" >'+"Previous"+'</button></li>');
         for(var x= 1;x<=(parseInt(dim/rows,10)); x++){
             if(x==pagSel){
                 $('.pagination').append('<li data-page="'+x+'" class="page-item active"><button class="page-link" type="button" >'+x+'</button></li>');
@@ -16,12 +16,28 @@ function impaginazione(tabella){
                 $('.pagination').append('<li data-page="'+x+'" class="page-item"><button class="page-link" type="button" >'+x+'</button></li>');
             }
         }
-        $('.pagination').append('<li  class="page-item"><button class="page-link" type="button" >'+"Next"+'</button></li>');
+        $('.pagination').append('<li data-page="'+"next"+'" class="page-item"><button class="page-link" type="button" >'+"Next"+'</button></li>');
 
         $('.pagination li').on('click',function(){
             $('.pagination li').removeClass('active');
-            pagSel=$(this).attr('data-page');
-            $(this).addClass('active');
+            // var allPg=$('.pagination li:gt(0)');
+
+            if($(this).attr('data-page')=="previous"){
+                console.log("ciaooo "+pagSel+"   "+rows*(pagSel-1)+1);
+                if(pagSel>1){
+                    pagSel--;
+                }
+                $("li[data-page='"+pagSel+"']").addClass('active');
+            }else if($(this).attr('data-page')=="next"){
+                if(pagSel<parseInt(dim/rows,10)){
+                    pagSel++;
+                }
+                $("li[data-page='"+pagSel+"']").addClass('active');
+            }else{
+                pagSel=$(this).attr('data-page');
+                $(this).addClass('active');
+            }
+            
             paginaSelezionata(rows,pagSel);
         })
 
@@ -51,3 +67,4 @@ function paginaSelezionata(nRows,pageSelected){
         }
     }
 }
+

@@ -73,7 +73,7 @@ function creaTabellaFlyLanded() {
     });
 
 
-    if($('#maxRows').val()==600){
+    if($('#maxRows').val()=="all"){
         $('#pagesId').empty();
         $.each(tabellaFL, function (key, val) {
             var tdId = '<td>' + val._id + '</td>';

@@ -1,5 +1,6 @@
 var cont = 0;
 var tabellaFL;
+var pagSel=1;
 function doCall(typeRequest, urlPath, parametri, callbackOnSuccess, callbackOnError) {
     $.ajax({
         url: urlPath,
@@ -73,7 +74,7 @@ function creaTabellaFlyLanded() {
 
 
     if($('#maxRows').val()==600){
-
+        $('#pagesId').empty();
         $.each(tabellaFL, function (key, val) {
             var tdId = '<td>' + val._id + '</td>';
             var tdTratta = '<td>' + val.tratta + '</td>';
@@ -94,7 +95,6 @@ function creaTabellaFlyLanded() {
         });
     }else impaginazione(tabellaFL);
 
-            // impaginazione();
         
 }
 

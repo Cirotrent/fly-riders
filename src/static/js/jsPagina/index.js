@@ -1,6 +1,40 @@
-var cont = 0;
+
 var tabellaFL;
-var pagSel=1;
+var pagSel = 1;
+var MaxRows = 10;
+var dim;// dimenzione tabella (in righe)
+var nPag;
+var partizioni;
+var indice = 1;
+var maxPag;
+
+$(document).ready(function () {
+    $('#maxRows').change(function () {
+
+        if ($('#maxRows').val() == "all") {
+            MaxRows = dim;
+        } else MaxRows = $('#maxRows').val();
+        console.log("sono dentro!")
+        pagSel = 1;
+        nPag = Math.ceil(dim / MaxRows);
+        if (nPag > 15) {
+            indice=1;
+            partizioni = nPag / 15;
+            maxPag = indice * 15;
+            popolaSetPag(pagSel, maxPag);
+        } else {
+            maxPag = nPag;
+            popolaSetPag(pagSel, maxPag);
+        }
+
+        selezionaPag(dim, MaxRows);
+        popolaPagina(MaxRows, pagSel);
+        return;
+    });
+    $("#tableFlyLandedId").show();
+    setInterval(generaListaFlyLanded, 5000);
+});
+
 function doCall(typeRequest, urlPath, parametri, callbackOnSuccess, callbackOnError) {
     $.ajax({
         url: urlPath,
@@ -33,7 +67,7 @@ function creaTabellaCreated(risposta) {
     $.each(risposta, function (key, val) {
         var tdId = '<td>' + val._id + '</td>';
         var tdTratta = '<td>' + val.tratta + '</td>';
-        var tdAzione = '<td>' + "<button type='button' class='btn btn-primary btn-md' id='clickFly' onclick='fly(" +JSON.stringify(val)+ ")' style='background-color: brown;'>" + "Fly" + "</button>" + '</td>';
+        var tdAzione = '<td>' + "<button type='button' class='btn btn-primary btn-md' id='clickFly' onclick='fly(" + JSON.stringify(val) + ")' style='background-color: brown;'>" + "Fly" + "</button>" + '</td>';
 
         $('#tableCreatedId').append('<tr>' + tdId + tdTratta + tdAzione + '</tr>');
 
@@ -42,87 +76,48 @@ function creaTabellaCreated(risposta) {
 }
 
 function generaListaFlyLanded() {
-    if(cont==0){
-        setInterval(generaListaFlyLanded, 10000);
-        cont++;
-    }
     doCall('GET', 'http://212.237.32.76:3001/status', undefined, function (risposta) {
         // ON SUCCESS
-        tabellaFL=risposta;
-        $("#tableFlyLandedId").show();
+        tabellaFL = risposta;
         creaTabellaFlyLanded();
-       
     });
 }
 
 function creaTabellaFlyLanded() {
 
-    $("#tableFlyLandedId").empty();
-    $('#pagId').empty();
     tabellaFL.sort(function (a, b) {
-        var statusA = a._id.toUpperCase(); // ignora maiuscole e minuscole
-        var statusB = b._id.toUpperCase(); // ignora maiuscole e minuscole
-        if (statusA > statusB) {
+        var dateA = a.startDate;
+        var dateB = b.startDate;
+        if (dateA > dateB) {
             return -1;
         }
-        if (statusA > statusB) {
+        if (dateA < dateB) {
             return 1;
         }
-        // i nomi devono essere uguali
         return 0;
     });
 
+    impaginazione(tabellaFL);
 
-    if($('#maxRows').val()=="all"){
-        $('#pagesId').empty();
-        $.each(tabellaFL, function (key, val) {
-            var tdId = '<td>' + val._id + '</td>';
-            var tdTratta = '<td>' + val.tratta + '</td>';
-            
-            if(val.status== "LANDED"){
-                var tdStato = '<td>' + val.status + '</td>';
-                var tdPartenza='<td>' + val.startDate + '</td>';
-                var tdArrivo = '<td>' + val.endDate  + '</td>';
-                $('#tableFlyLandedId').append('<tr>' + tdId + tdTratta + tdStato + tdPartenza + tdArrivo+'</tr>');
-
-            }else{
-                var tdStato = '<td style="color: brown;">' + val.status + '</td>';
-                var tdPartenza='<td>' + val.startDate + '</td>';
-                var tdArrivo = '<td>' + "In volo...&#128747;" + '</td>';
-                $('#tableFlyLandedId').append('<tr style="color: brown;">' + tdId + tdTratta + tdStato + tdPartenza + tdArrivo+'</tr>');
-
-            }
-        });
-    }else impaginazione(tabellaFL);
-
-        
 }
-
-
-
-
 
 function fly(volo) {
     doCall('GET', 'http://212.237.32.76:3001/start/' + volo._id, undefined, function (risposta) {
         // ON SUCCESS
-        
-        // aggiornaTabellaCreated(id);
+
         generaListaCreati();
-        volo.status="FLYING";
+        volo.status = "FLYING";
         aggiornaTabellaFlyLanded(volo);
-        
+
     });
 }
 
-function aggiornaTabellaFlyLanded(volo){
-        var tdId = '<td>' + volo._id + '</td>';
-        var tdTratta = '<td>' + volo.tratta + '</td>';
-        var tdStato = '<td>' + volo.status + '</td>';
-        var tdPartenza='<td>' + "In partenza..." + '</td>';
-        $('#tableFlyLandedId').prepend('<tr style="color: brown;">' + tdId + tdTratta + tdStato + tdPartenza  + '</tr>');
+function aggiornaTabellaFlyLanded(volo) {
+    var a = '<td>' + "->" + '</td>';
+    var tdId = '<td>' + volo._id + '</td>';
+    var tdTratta = '<td>' + volo.tratta + '</td>';
+    var tdStato = '<td>' + volo.status + '</td>';
+    var tdPartenza = '<td>' + "In partenza..." + '</td>';
+    $('#tableFlyLandedId').prepend('<tr style="color: brown;">' + a + tdId + tdTratta + tdStato + tdPartenza + '</tr>');
 }
 
-
-function fun1(){
-    console.log("ciao");
-}

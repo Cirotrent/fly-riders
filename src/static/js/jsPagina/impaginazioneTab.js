@@ -86,15 +86,6 @@ function popolaSetPag(paginaSelezionata, numeroMaxDiPagine) {
 
     $('.pagination').empty();
     if (numeroMaxDiPagine != 1) {
-        // $('.pagination').append('<li data-page="' + "previous" + '" class="page-item"><button class="page-link" type="button" >' + "Previous" + '</button></li>');
-        // for (var x = 1; x <= numeroDiPagine; x++) {
-        //     if (x == paginaSelezionata) {
-        //         $('.pagination').append('<li data-page="' + x + '" class="page-item active"><button class="page-link" type="button" >' + x + '</button></li>');
-        //     } else {
-        //         $('.pagination').append('<li data-page="' + x + '" class="page-item"><button class="page-link" type="button" >' + x + '</button></li>');
-        //     }
-        // }
-        // $('.pagination').append('<li data-page="' + "next" + '" class="page-item"><button class="page-link" type="button" >' + "Next" + '</button></li>');
         $('.pagination').append('<li data-page="' + "previous" + '" class="page-item"><button class="page-link" type="button" >' + "Previous" + '</button></li>');
         var inizio;
         if (numeroMaxDiPagine >= 15) {

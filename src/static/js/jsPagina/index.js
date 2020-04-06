@@ -14,7 +14,7 @@ $(document).ready(function () {
         if ($('#maxRows').val() == "all") {
             MaxRows = dim;
         } else MaxRows = $('#maxRows').val();
-        console.log("sono dentro!")
+        //console.log("sono dentro!")
         pagSel = 1;
         nPag = Math.ceil(dim / MaxRows);
         if (nPag > 15) {
